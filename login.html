@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>ورود و ثبت‌نام</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 30px; }
+    .hidden { display: none; }
+    input { padding: 10px; margin: 5px; width: 200px; }
+    button { padding: 10px 20px; }
+    #result { margin-top: 10px; color: red; }
+  </style>
+</head>
+<body>
+
+  <h1>سیستم ورود کاربران</h1>
+
+  <!-- فرم ثبت‌نام -->
+  <div id="signupSection">
+    <h2>ثبت‌نام</h2>
+    <input type="text" id="signupUsername" placeholder="نام کاربری"><br>
+    <input type="password" id="signupPassword" placeholder="رمز عبور"><br>
+    <button onclick="signup()">ثبت‌نام</button>
+    <p>حساب داری؟ <a href="#" onclick="switchSection('login')">وارد شو</a></p>
+    <div id="signupResult"></div>
+  </div>
+
+  <!-- فرم ورود -->
+  <div id="loginSection" class="hidden">
+    <h2>ورود</h2>
+    <input type="text" id="loginUsername" placeholder="نام کاربری"><br>
+    <input type="password" id="loginPassword" placeholder="رمز عبور"><br>
+    <button onclick="login()">ورود</button>
+    <p>حساب نداری؟ <a href="#" onclick="switchSection('signup')">ثبت‌نام کن</a></p>
+    <div id="loginResult"></div>
+  </div>
+
+  <!-- صفحه اصلی -->
+  <div id="mainSection" class="hidden">
+    <h2>خوش آمدید!</h2>
+    <p>شما با موفقیت وارد شدید.</p>
+    <button onclick="logout()">خروج</button>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbz1FGMWGbMKi37IDsPTec9KGJ08ZrAJhJHP7WTYkNli-vLj9AL_DGNR6JTOeNqReXtOnA/exec";
+
+    function switchSection(section) {
+      document.getElementById("signupSection").classList.add("hidden");
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("mainSection").classList.add("hidden");
+
+      if (section === 'signup') document.getElementById("signupSection").classList.remove("hidden");
+      else if (section === 'login') document.getElementById("loginSection").classList.remove("hidden");
+      else if (section === 'main') document.getElementById("mainSection").classList.remove("hidden");
+    }
+
+    function signup() {
+      const username = document.getElementById("signupUsername").value;
+      const password = document.getElementById("signupPassword").value;
+      const params = new URLSearchParams();
+      params.append("action", "signup");
+      params.append("username", username);
+      params.append("password", password);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: params
+      }).then(res => res.text()).then(result => {
+        const msg = document.getElementById("signupResult");
+        if (result === "success") {
+          msg.style.color = "green";
+          msg.innerText = "ثبت‌نام موفق بود. حالا وارد شو.";
+          switchSection('login');
+        } else if (result === "exists") {
+          msg.innerText = "این نام کاربری قبلاً وجود دارد.";
+        } else {
+          msg.innerText = "خطا در ثبت‌نام.";
+        }
+      });
+    }
+
+    function login() {
+      const username = document.getElementById("loginUsername").value;
+      const password = document.getElementById("loginPassword").value;
+      const params = new URLSearchParams();
+      params.append("action", "login");
+      params.append("username", username);
+      params.append("password", password);
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: params
+      }).then(res => res.text()).then(result => {
+        const msg = document.getElementById("loginResult");
+        if (result === "ok") {
+          switchSection('main');
+        } else {
+          msg.innerText = "نام کاربری یا رمز اشتباه است.";
+        }
+      });
+    }
+
+    function logout() {
+      switchSection('login');
+    }
+
+    // شروع با فرم ورود
+    switchSection('login');
+  </script>
+
+</body>
+</html>
