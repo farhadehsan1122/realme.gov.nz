@@ -2,111 +2,103 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>ورود و ثبت‌نام</title>
+  <title>ورود به حساب کاربری</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 30px; }
-    .hidden { display: none; }
-    input { padding: 10px; margin: 5px; width: 200px; }
-    button { padding: 10px 20px; }
-    #result { margin-top: 10px; color: red; }
+    body {
+      background: linear-gradient(to right, #6dd5fa, #2980b9);
+      font-family: 'Vazirmatn', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-box {
+      background-color: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      direction: rtl;
+    }
+
+    .login-box h2 {
+      margin-bottom: 30px;
+      color: #2c3e50;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 18px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: red;
+    }
   </style>
 </head>
 <body>
 
-  <h1>سیستم ورود کاربران</h1>
-
-  <!-- فرم ثبت‌نام -->
-  <div id="signupSection">
-    <h2>ثبت‌نام</h2>
-    <input type="text" id="signupUsername" placeholder="نام کاربری"><br>
-    <input type="password" id="signupPassword" placeholder="رمز عبور"><br>
-    <button onclick="signup()">ثبت‌نام</button>
-    <p>حساب داری؟ <a href="#" onclick="switchSection('login')">وارد شو</a></p>
-    <div id="signupResult"></div>
-  </div>
-
-  <!-- فرم ورود -->
-  <div id="loginSection" class="hidden">
-    <h2>ورود</h2>
-    <input type="text" id="loginUsername" placeholder="نام کاربری"><br>
-    <input type="password" id="loginPassword" placeholder="رمز عبور"><br>
-    <button onclick="login()">ورود</button>
-    <p>حساب نداری؟ <a href="#" onclick="switchSection('signup')">ثبت‌نام کن</a></p>
-    <div id="loginResult"></div>
-  </div>
-
-  <!-- صفحه اصلی -->
-  <div id="mainSection" class="hidden">
-    <h2>خوش آمدید!</h2>
-    <p>شما با موفقیت وارد شدید.</p>
-    <button onclick="logout()">خروج</button>
+  <div class="login-box">
+    <h2>ورود به حساب</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="ایمیل" required>
+      <input type="password" id="password" placeholder="رمز عبور" required>
+      <button type="submit">ورود</button>
+    </form>
+    <p id="result"></p>
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbz1FGMWGbMKi37IDsPTec9KGJ08ZrAJhJHP7WTYkNli-vLj9AL_DGNR6JTOeNqReXtOnA/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxW7bKT8EBQOOhGrdeCrq5N7SExp1zXMzGN9vR_77w_ty_Zfs659XMtKDU1elFgXFT--Q/exec";
 
-    function switchSection(section) {
-      document.getElementById("signupSection").classList.add("hidden");
-      document.getElementById("loginSection").classList.add("hidden");
-      document.getElementById("mainSection").classList.add("hidden");
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
 
-      if (section === 'signup') document.getElementById("signupSection").classList.remove("hidden");
-      else if (section === 'login') document.getElementById("loginSection").classList.remove("hidden");
-      else if (section === 'main') document.getElementById("mainSection").classList.remove("hidden");
-    }
+      const formData = new FormData();
+      formData.append("email", document.getElementById('email').value);
+      formData.append("password", document.getElementById('password').value);
 
-    function signup() {
-      const username = document.getElementById("signupUsername").value;
-      const password = document.getElementById("signupPassword").value;
-      const params = new URLSearchParams();
-      params.append("action", "signup");
-      params.append("username", username);
-      params.append("password", password);
-
-      fetch(scriptURL, {
-        method: 'POST',
-        body: params
-      }).then(res => res.text()).then(result => {
-        const msg = document.getElementById("signupResult");
-        if (result === "success") {
-          msg.style.color = "green";
-          msg.innerText = "ثبت‌نام موفق بود. حالا وارد شو.";
-          switchSection('login');
-        } else if (result === "exists") {
-          msg.innerText = "این نام کاربری قبلاً وجود دارد.";
-        } else {
-          msg.innerText = "خطا در ثبت‌نام.";
-        }
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: formData
       });
-    }
 
-    function login() {
-      const username = document.getElementById("loginUsername").value;
-      const password = document.getElementById("loginPassword").value;
-      const params = new URLSearchParams();
-      params.append("action", "login");
-      params.append("username", username);
-      params.append("password", password);
-
-      fetch(scriptURL, {
-        method: 'POST',
-        body: params
-      }).then(res => res.text()).then(result => {
-        const msg = document.getElementById("loginResult");
-        if (result === "ok") {
-          switchSection('main');
-        } else {
-          msg.innerText = "نام کاربری یا رمز اشتباه است.";
-        }
-      });
-    }
-
-    function logout() {
-      switchSection('login');
-    }
-
-    // شروع با فرم ورود
-    switchSection('login');
+      const text = await res.text();
+      const result = document.getElementById('result');
+      if (text === "success") {
+        result.style.color = "green";
+        result.textContent = "ورود موفقیت‌آمیز بود!";
+      } else {
+        result.style.color = "red";
+        result.textContent = "ایمیل یا رمز عبور اشتباه است.";
+      }
+    });
   </script>
 
 </body>
